@@ -41,7 +41,7 @@ Finally, to be able to call webeep at any time from your terminal.
 
 On Linux:
 ```bash
-sudo mv ./webeep_linux $HOME/bin/webeep
+sudo mv ./webeep_linux /usr/bin/webeep
 ```
 On Mac:
 ```bash
