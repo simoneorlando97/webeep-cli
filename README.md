@@ -49,4 +49,45 @@ sudo mv ./webeep_macos /usr/local/bin/webeep
 ```
 For Windows users it is recommended to run the program within powershell.
 ## Usage
-Test
+The first time you start webeep-cli you will be asked for the credentials of the Politecnico di Milano.
+```bash
+webeep
+```
+If you change the password on the online services you can force the updating of the credentials on webeep-cli via
+```bash
+webeep --login
+```
+Once logged in, you can list your course folders via
+```bash
+ls
+```
+If you also want the respective links of files and folders you can use
+```bash
+ls -l
+```
+You can navigate through the folders using
+```bash
+cd number_associated_with_the_folder
+```
+To find out which course you are in you can use
+```bash
+pwd
+```
+You can download files via
+```bash
+get n_1 n_2 n_3 -d destination_path
+```
+where n_* are the numbers associated with the files you want to download and destination_path is the folder where you want to save these files.
+
+If you want, instead, to download all the files in a folder you can use the command
+```bash
+get -all destination_path
+```
+To clean the console
+```bash
+clear
+```
+and finally to exit webeep-cli
+```bash
+exit
+```
