@@ -61,7 +61,14 @@ fn main() {
         stdin().read_line(&mut usr_input).expect("msg"); 
 
         let mut cmd_iter = usr_input.split_ascii_whitespace();
-        let cmd = cmd_iter.next().unwrap();
+        let cmd_un = cmd_iter.next();
+        let cmd;
+        if cmd_un != None {
+            cmd = cmd_un.unwrap();
+        }
+        else {
+            continue
+        }
 
         if cmd.contains("ls") {
             let param = cmd_iter.next();
