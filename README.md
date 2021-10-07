@@ -11,6 +11,10 @@ A tool to use the [WeBeep](https://webeep.polimi.it/login/index.php) platform of
 - Download single files, multiple files or entire folders with one simple command
 - View direct links related to specific files or folders and open them with a single click directly in your browser
 
+## Attention
+The webeep display must be the default matrix display.
+
+
 ## Installation
 Download the release corresponding to your operating system from the panel on the right or directly from your terminal.
 
