@@ -73,6 +73,9 @@ You can navigate through the folders using
 ```bash
 cd number_associated_with_the_folder
 ```
+```bash
+cd ..
+```
 To find out which course you are in you can use
 ```bash
 pwd
