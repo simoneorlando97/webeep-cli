@@ -12,7 +12,7 @@ A tool to use the [WeBeep](https://webeep.polimi.it/login/index.php) platform of
 - View direct links related to specific files or folders and open them with a single click directly in your browser
 
 ## Attention
-The webeep display must be the default matrix display.
+The webeep view must be the default matrix style.
 
 
 ## Installation
