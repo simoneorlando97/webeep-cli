@@ -21,35 +21,35 @@ Download the release corresponding to your operating system from the panel on th
 
 For Linux:
 ```bash
-wget https://github.com/simoneorlando97/webeep-cli/releases/download/v1.0/webeep_linux
+wget https://github.com/simoneorlando97/webeep-cli/releases/download/v1.1/webeep-linux
 ```
 For Mac:
 ```bash
-wget https://github.com/simoneorlando97/webeep-cli/releases/download/v1.0/webeep_macos
+wget https://github.com/simoneorlando97/webeep-cli/releases/download/v1.1/webeep-macos
 ```
 For Windows:
 ```bash
-wget https://github.com/simoneorlando97/webeep-cli/releases/download/v1.0/webeep_win.exe
+wget https://github.com/simoneorlando97/webeep-cli/releases/download/v1.1/webeep-win.exe
 ```
 Once downloaded you need to give it execute permissions.
 
 On Linux:
 ```bash
-chmod +x ./webeep_linux
+chmod +x ./webeep-linux
 ```
 On Mac:
 ```bash
-chmod +x ./webeep_linux
+chmod +x ./webeep-macos
 ```
 Finally, to be able to call webeep at any time from your terminal.
 
 On Linux:
 ```bash
-sudo mv ./webeep_linux /usr/bin/webeep
+sudo mv ./webeep-linux /usr/bin/webeep
 ```
 On Mac:
 ```bash
-sudo mv ./webeep_macos /usr/local/bin/webeep
+sudo mv ./webeep-macos /usr/local/bin/webeep
 ```
 For Windows users it is recommended to run the program within powershell.
 ## Usage
