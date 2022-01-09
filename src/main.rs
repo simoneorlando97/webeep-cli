@@ -21,6 +21,8 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let mut id = String::from("");
     let mut pass = String::from("");
+    let mut otp = String::from("");
+
     if args.len() > 1 && args[1].eq("--login") {
         print!("PoliMi id: ");
         std::io::stdout().flush().unwrap();
@@ -33,6 +35,7 @@ fn main() {
         confy::store("webeep",my_cfg).expect("Error in creating the config file!");
     }
     let cfg : User = confy::load("webeep").expect("Error in reading the config file!");
+
     if cfg.id.eq("") {
         println!("You only have to enter your credentials on the first launch!");
         print!("PoliMi id: ");
@@ -49,7 +52,11 @@ fn main() {
         id = cfg.id;
         pass = cfg.pass;
     }
-    let mut controller = controller::Controller::new(id.trim(),pass.trim());
+
+    print!("OTP: ");
+    std::io::stdout().flush().unwrap();
+    stdin().read_line(&mut otp).unwrap();
+    let mut controller = controller::Controller::new(id.trim(),pass.trim(),otp.trim());
     controller.start();
     let mut usr_input = String::new();
     let mut curr_pos = Vec::new();
