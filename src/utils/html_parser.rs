@@ -6,7 +6,7 @@ pub fn get_courses_keys(html : String) -> Vec<String>{
     let ul_selector = Selector::parse("ul").unwrap();
     let li_selector = Selector::parse("li").unwrap();
 
-    let ul = fragment.select(&ul_selector).skip(5).next().unwrap();
+    let ul = fragment.select(&ul_selector).skip(6).next().unwrap();
     for element in ul.select(&li_selector) {
         keys.push( String::from(element.value().attr("data-key").unwrap()));
     }

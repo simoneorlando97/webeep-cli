@@ -19,8 +19,16 @@ impl HttpClient {
 
     pub fn get_action_from_html(&mut self,response : Response) -> String{
         let html = response.text().expect("Error while parsing the html!");
+        let start_index = html.find(" action=").expect("Error while parsing the html! Could not find starting index.") + 9;
+        let end_index = html.find("\" class=\"jaf-form jaf-mobile-form\"><button").expect("Error while parsing the html! Could not find ending index.");
+        let action = &html[start_index..end_index];
+        return String::from(action);
+    }
+
+    pub fn get_action_from_html_otp(&mut self,response : Response) -> String{
+        let html = response.text().expect("Error while parsing the html!");
         let start_index = html.find(" action=").expect("Error while parsing the html!") + 9;
-        let end_index = html.find("\" class=\"jaf-form jaf-mobile-form\"><button").expect("Error while parsing the html!");
+        let end_index = html.find("\" id=\"form_scelta2fa\" class=\"jaf-form jaf-mobile-form\"><button").expect("Error while parsing the html!");
         let action = &html[start_index..end_index];
         return String::from(action);
     }
@@ -45,6 +53,12 @@ impl HttpClient {
     pub fn hidden_post_req(&mut self, url : String, first_param : String, second_param : String) -> Response {
         let params = [("RelayState", first_param.as_str()),("SAMLResponse",second_param.as_str())];
         let res = self.client.post(url).form(&params).send().expect("Failed to execute hidden post request");
+        return res;
+    }
+
+    pub fn otp_post_req(&mut self, url: String, otp_key: &str) -> Response {
+        let params = [("evn_continua",""),("otp", otp_key)];
+        let res = self.client.post(url).form(&params).send().expect("Failed to execute OTP post request");
         return res;
     }
 }
