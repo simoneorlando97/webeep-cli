@@ -30,9 +30,6 @@ fn main() {
         print!("Password: ");
         std::io::stdout().flush().unwrap();
         stdin().read_line(&mut pass).unwrap();
-        print!("OTP: ");
-        std::io::stdout().flush().unwrap();
-        stdin().read_line(&mut otp).unwrap();
         print!("\x1B[2J\x1B[1;1H");
         let my_cfg = User {id: id.clone(), pass: pass.clone()};
         confy::store("webeep",my_cfg).expect("Error in creating the config file!");
@@ -47,9 +44,6 @@ fn main() {
         print!("Password: ");
         std::io::stdout().flush().unwrap();
         stdin().read_line(&mut pass).unwrap();
-        print!("OTP: ");
-        std::io::stdout().flush().unwrap();
-        stdin().read_line(&mut otp).unwrap();
         print!("\x1B[2J\x1B[1;1H");
         let my_cfg = User {id: id.clone(), pass: pass.clone()};
         confy::store("webeep",my_cfg).expect("Error in creating the config file!");
@@ -57,10 +51,11 @@ fn main() {
     else {
         id = cfg.id;
         pass = cfg.pass;
-        print!("OTP: ");
-        std::io::stdout().flush().unwrap();
-        stdin().read_line(&mut otp).unwrap();
     }
+
+    print!("OTP: ");
+    std::io::stdout().flush().unwrap();
+    stdin().read_line(&mut otp).unwrap();
     let mut controller = controller::Controller::new(id.trim(),pass.trim(),otp.trim());
     controller.start();
     let mut usr_input = String::new();
