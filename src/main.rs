@@ -16,7 +16,7 @@ struct User {
     secret: String
 }
 impl ::std::default::Default for User {
-    fn default() -> Self { Self {id: "".into(), pass: "".into(), secret: "".into() } }
+    fn default() -> Self { Self {id: "".into(), pass: "".into(), secret: "".into()} }
 }
 
 
@@ -36,19 +36,9 @@ fn main() {
         print!("Password: ");
         std::io::stdout().flush().unwrap();
         stdin().read_line(&mut pass).unwrap();
-        /*print!("Insert OTP or TOTP secret: ");
-        std::io::stdout().flush().unwrap();
-        stdin().read_line(&mut otp).unwrap();
-        if otp.chars().count()==7 {
-            otptype = 1;
-        }
-        else {
-            otptype = 2;
-            secret = otp.clone();
-        }*/
+
         print!("\x1B[2J\x1B[1;1H");
-        let my_cfg = User {id: id.clone(), pass: pass.clone(), secret: secret.clone()};
-        confy::store("webeep",my_cfg).expect("Error in creating the config file!");
+
     }
     let cfg : User = confy::load("webeep").expect("Error in reading the config file!");
 
@@ -63,7 +53,7 @@ fn main() {
         print!("Insert OTP or TOTP secret: ");
         std::io::stdout().flush().unwrap();
         stdin().read_line(&mut otp).unwrap();
-        if otp.chars().count()==7 {
+        if otp.chars().count() < 10 {
             otptype = 1;
         }
         else {
@@ -71,23 +61,19 @@ fn main() {
             secret = otp.clone();
         }
         print!("\x1B[2J\x1B[1;1H");
-        let my_cfg = User {id: id.clone(), pass: pass.clone(), secret: secret.clone()};
-        confy::store("webeep",my_cfg).expect("Error in creating the config file!");
     }
-    else if cfg.secret.eq(""){
+    else if cfg.secret.eq("") || (args.len() > 1 && args[1].eq("--login")){
         id = cfg.id;
         pass = cfg.pass;
         print!("Insert OTP or TOTP secret: ");
         std::io::stdout().flush().unwrap();
         stdin().read_line(&mut otp).unwrap();
-        if otp.chars().count() == 7 {
+        if otp.chars().count() < 10 {
             otptype = 1;
         }
         else {
             otptype = 2;
             secret = otp.clone();
-            let my_cfg = User {id: id.clone(), pass: pass.clone(), secret: secret.clone()};
-            confy::store("webeep",my_cfg).expect("Error in creating the config file!");
         }
     }
     else {
@@ -103,11 +89,13 @@ fn main() {
   
     let mut controller = controller::Controller::new(id.trim(),pass.trim(),otp.trim());
     controller.start();
+    let my_cfg = User {id: id.clone(), pass: pass.clone(), secret: secret.clone()};
+    confy::store("webeep",my_cfg).expect("Error in creating the config file!");
     let mut usr_input = String::new();
     let mut curr_pos = Vec::new();
     curr_pos.push(String::from("/"));
     print!("\x1B[2J\x1B[1;1H");
-    while !usr_input.eq(&String::from("exit\n")) {
+    while !usr_input.eq(&String::from("exit\n")) && !usr_input.eq(&String::from("exit\r\n"))  {
         usr_input.clear();
         cli::print_logo();
         stdin().read_line(&mut usr_input).expect("msg"); 
