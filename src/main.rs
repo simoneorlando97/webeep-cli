@@ -7,20 +7,28 @@ use std::{io::{Write, stdin},env};
 use serde::{Serialize, Deserialize};
 use cli::*;
 
+use google_authenticator::GoogleAuthenticator;
+
 #[derive(Serialize, Deserialize)]
 struct User {
     id: String,
-    pass: String
+    pass: String,
+    secret: String
 }
 impl ::std::default::Default for User {
-    fn default() -> Self { Self {id: "".into(), pass: "".into() } }
+    fn default() -> Self { Self {id: "".into(), pass: "".into(), secret: "".into() } }
 }
 
 
 fn main() {
+    let auth = GoogleAuthenticator::new();
     let args: Vec<String> = env::args().collect();
     let mut id = String::from("");
     let mut pass = String::from("");
+    let mut secret = String::from("");
+    let mut otp = String::from("");
+    let mut otptype = 2;
+
     if args.len() > 1 && args[1].eq("--login") {
         print!("PoliMi id: ");
         std::io::stdout().flush().unwrap();
@@ -28,11 +36,22 @@ fn main() {
         print!("Password: ");
         std::io::stdout().flush().unwrap();
         stdin().read_line(&mut pass).unwrap();
+        /*print!("Insert OTP or TOTP secret: ");
+        std::io::stdout().flush().unwrap();
+        stdin().read_line(&mut otp).unwrap();
+        if otp.chars().count()==7 {
+            otptype = 1;
+        }
+        else {
+            otptype = 2;
+            secret = otp.clone();
+        }*/
         print!("\x1B[2J\x1B[1;1H");
-        let my_cfg = User {id: id.clone(), pass: pass.clone()};
+        let my_cfg = User {id: id.clone(), pass: pass.clone(), secret: secret.clone()};
         confy::store("webeep",my_cfg).expect("Error in creating the config file!");
     }
     let cfg : User = confy::load("webeep").expect("Error in reading the config file!");
+
     if cfg.id.eq("") {
         println!("You only have to enter your credentials on the first launch!");
         print!("PoliMi id: ");
@@ -41,15 +60,48 @@ fn main() {
         print!("Password: ");
         std::io::stdout().flush().unwrap();
         stdin().read_line(&mut pass).unwrap();
+        print!("Insert OTP or TOTP secret: ");
+        std::io::stdout().flush().unwrap();
+        stdin().read_line(&mut otp).unwrap();
+        if otp.chars().count()==7 {
+            otptype = 1;
+        }
+        else {
+            otptype = 2;
+            secret = otp.clone();
+        }
         print!("\x1B[2J\x1B[1;1H");
-        let my_cfg = User {id: id.clone(), pass: pass.clone()};
+        let my_cfg = User {id: id.clone(), pass: pass.clone(), secret: secret.clone()};
         confy::store("webeep",my_cfg).expect("Error in creating the config file!");
+    }
+    else if cfg.secret.eq(""){
+        id = cfg.id;
+        pass = cfg.pass;
+        print!("Insert OTP or TOTP secret: ");
+        std::io::stdout().flush().unwrap();
+        stdin().read_line(&mut otp).unwrap();
+        if otp.chars().count() == 7 {
+            otptype = 1;
+        }
+        else {
+            otptype = 2;
+            secret = otp.clone();
+            let my_cfg = User {id: id.clone(), pass: pass.clone(), secret: secret.clone()};
+            confy::store("webeep",my_cfg).expect("Error in creating the config file!");
+        }
     }
     else {
         id = cfg.id;
         pass = cfg.pass;
+        secret = cfg.secret;
     }
-    let mut controller = controller::Controller::new(id.trim(),pass.trim());
+
+    if otptype == 2 {
+        let code = auth.get_code((&secret).trim(), 0);
+        otp = code.unwrap();
+    }
+  
+    let mut controller = controller::Controller::new(id.trim(),pass.trim(),otp.trim());
     controller.start();
     let mut usr_input = String::new();
     let mut curr_pos = Vec::new();

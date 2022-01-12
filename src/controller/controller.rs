@@ -12,16 +12,18 @@ pub struct Controller {
     pub client : HttpClient,
     pub id  : String,
     pub pass : String,
+    pub otp : String,
     pub courses : Vec<Course>,
 }
 
 impl Controller {
 
-    pub fn new(id : &str, pass : &str) -> Controller {
+    pub fn new(id : &str, pass : &str, otp : &str) -> Controller {
         return Controller{
             client : HttpClient::new(),
             id : String::from(id),
             pass : String::from(pass),
+            otp : String::from(otp),
             courses : Vec::new()
         };
     }
@@ -29,7 +31,8 @@ impl Controller {
     pub fn start(&mut self) {
         let id = self.id.clone();
         let pass = self.pass.clone();
-        let resp = self.login(id.as_str(),pass.as_str());
+        let otp = self.otp.clone();
+        let resp = self.login(id.as_str(),pass.as_str(),otp.as_str());
         println!("Fetching courses' informations, this may take a while.");
         let courses_names = self.get_courses_names(resp);
         for course in courses_names {
@@ -41,21 +44,36 @@ impl Controller {
         println!("Everything is ready!");
     }
 
-    fn login(&mut self,id : &str, pass : &str) -> Response{
+    fn login(&mut self, id : &str, pass : &str, otp : &str) -> Response{
+        //ID e PASSWORD + CONFERMA
         let first_response = self.client.get_redirect(String::from(utils::WE_BEEP_URL));
         println!("Connecting to WeBeep...");
         let action = self.client.get_action_from_html(first_response);
         let mut final_action = String::from(utils::AUNICA_URL);
         println!("Redirecting to Aunica.");
         final_action.push_str(action.as_str());
-        let post_response = self.client.post_req(final_action, id, pass);
+        let post_response = self.client.post_req(final_action.clone(), id, pass);
         println!("Sending credentials.");
-        let hidden_action_parameters = self.client.get_hidden_param_from_html(post_response);
+
+        
+        //OTP + CONTINUA
+        let action_otp = self.client.get_action_from_html_otp(post_response);
+        let mut final_action_otp = String::from(utils::AUNICA_URL);
+        final_action_otp.push_str(action_otp.as_str());
+
+        let otp_response = self.client.otp_post_req(final_action_otp.clone(), &otp);
+
+        println!("Sending OTP code.");
+
+        //SAML2
+        let hidden_action_parameters = self.client.get_hidden_param_from_html(otp_response);
         println!("Extracting hidden parameters.");
+
         let landing_page = self.client.hidden_post_req(String::from(utils::HIDDEN_POST_URL), hidden_action_parameters.0, hidden_action_parameters.1);
         println!("Successfully login!");
         return landing_page;
     }
+
 
     fn get_courses_names(&mut self, response : Response) -> Vec<(String,String,String)> {
         let keys = get_courses_keys(response.text().expect(""));
