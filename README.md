@@ -1,4 +1,4 @@
-# webeep-cli
+# webeep-cli [no longer maintained]
 
 A tool to use the [WeBeep](https://webeep.polimi.it/login/index.php) platform of the Politecnico di Milano directly from the command line.
 
